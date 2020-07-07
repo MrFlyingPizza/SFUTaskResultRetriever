@@ -28,6 +28,7 @@ public class ResultRetrieverApp {
     private JPanel resultPanel;
     private JLabel loginSuccessLabel;
     private JLabel resultTreeButtonStatusLabel;
+    private JLabel creditLabel;
     private final ResultRetriever retriever = new ResultRetriever();
 
     public final String FAILED_GET_RESULT_MSG = "Failed get results!";
@@ -91,7 +92,8 @@ public class ResultRetrieverApp {
         JFrame frame = new JFrame("ResultRetrieverApp");
         frame.setContentPane(new ResultRetrieverApp().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+        frame.setSize(400, 150);
+        frame.setMinimumSize(new Dimension(400, 150));
         frame.setVisible(true);
     }
 
@@ -101,8 +103,8 @@ public class ResultRetrieverApp {
             retriever.sendLoginRequest();
             loginSuccessLabel.setText(SUCCESS_LOGIN_MSG);
 
-            authPanel.getTopLevelAncestor().setSize(850, 400);
-            Dimension minWindowSize = new Dimension(640, 480);
+            panel1.setSize(850, 520);
+            Dimension minWindowSize = new Dimension(640, 520);
             authPanel.getTopLevelAncestor().setMinimumSize(minWindowSize);
             authPanel.setVisible(false);
             resultPanel.setVisible(true);
