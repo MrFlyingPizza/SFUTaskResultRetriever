@@ -1,4 +1,3 @@
-import org.json.simple.parser.ParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -68,7 +67,7 @@ public class ResultRetriever {
         System.out.println(authUrl + "\n" + targetUrl);
     }
     // auth request
-    public void sendLoginRequest() throws IOException, ParseException {
+    public void sendLoginRequest() throws IOException {
 
         getExecution(targetUrl);
 
@@ -191,26 +190,6 @@ public class ResultRetriever {
             }
         }
         return dirs;
-    }
-
-    public void printResults(Object result, int tabIndex) {
-        String tab = "|\t";
-        String tabs = "";
-        for (int i = 0; i < tabIndex; i++) {
-            tabs.concat(tab);
-        }
-        try {
-
-            HashMap new_result = (HashMap) result;
-            for (Object key : new_result.keySet()) {
-                System.out.println(tabs + key);
-                Object new_obj = new_result.get(key);
-
-                printResults(new_obj, tabIndex + 1);
-            }
-        } catch (ClassCastException exception) {
-            System.out.println(tabs + tab + result);
-        }
     }
 
     // get task data

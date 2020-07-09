@@ -1,9 +1,5 @@
-import org.json.simple.parser.ParseException;
-
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,14 +51,9 @@ public class ResultRetrieverApp {
 
         resultTree.addTreeSelectionListener(e -> {
             Object[] paths = e.getPath().getPath();
-            String[] stringPaths = new String[4];
             if (paths.length == 4) {
-                for (int i = 0; i < 4; i++) {
-                    TreeNode node = (TreeNode) paths[i];
-                    stringPaths[i] = node.toString();
-                }
-                String content = retriever.getTaskResultByPath(stringPaths[1], stringPaths[2], stringPaths[3]);
-                resultTextArea.setText(content);
+                CustomNode node = (CustomNode) paths[3];
+                resultTextArea.setText(node.getData());
             }
         });
 
@@ -80,9 +71,6 @@ public class ResultRetrieverApp {
                 retriever.automateGetResultParse();
             } catch (IOException exception) {
                 resultTreeButtonStatusLabel.setText(FAILED_LOGIN_MSG);
-                exception.printStackTrace();
-            } catch (ParseException exception) {
-                resultTreeButtonStatusLabel.setText(FAILED_GET_RESULT_MSG);
                 exception.printStackTrace();
             }
         });
@@ -109,7 +97,7 @@ public class ResultRetrieverApp {
             authPanel.setVisible(false);
             resultPanel.setVisible(true);
 
-        } catch (IOException | ParseException exception) {
+        } catch (IOException exception) {
             loginSuccessLabel.setText(FAILED_LOGIN_MSG);
         }
     }
@@ -125,23 +113,26 @@ public class ResultRetrieverApp {
     }
 
     private void setResultTree() {
-        DefaultMutableTreeNode top = new DefaultMutableTreeNode("results");
-        DefaultMutableTreeNode tree = setResultRecursive(retriever.results, top);
+        CustomNode top = new CustomNode("results");
+        CustomNode tree = setResultRecursive(retriever.results, top);
         DefaultTreeModel treeModel = new DefaultTreeModel(tree);
         resultTree.setModel(treeModel);
+        resultTree.setCellRenderer(new CustomNodeRenderer());
     }
 
-    private DefaultMutableTreeNode setResultRecursive(Object result, DefaultMutableTreeNode node) {
+    private CustomNode setResultRecursive(Object result, CustomNode node) {
         HashMap new_result = (HashMap) result;
         for (Object key : new_result.keySet()) {
             if (!((String) key).contains("/")) {
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(key);
+                CustomNode child = new CustomNode(key);
+                child.setData(((HashMap<String, String>) result).get(key));
                 node.add(child);
+
                 System.out.println("add end child key " + key);
             } else {
                 Object new_obj = new_result.get(key);
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(key);
-                DefaultMutableTreeNode temp = setResultRecursive(new_obj, child);
+                CustomNode child = new CustomNode(key);
+                CustomNode temp = setResultRecursive(new_obj, child);
                 node.add(temp);
                 System.out.println("add child key " + key);
             }
